@@ -1,0 +1,159 @@
+
+-- Création et sélection de la base de données
+
+CREATE DATABASE IF NOT EXISTS BrasilBurgerDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE BrasilBurgerDB;
+
+-- 1. TABLES DES ACTEURS (Clients, Gestionnaires, Livreurs)
+------------------------------------------------------------
+CREATE TABLE CLIENTS (
+    idClient INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    telephone VARCHAR(15) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    motDePasse VARCHAR(255) NOT NULL,
+    adresse VARCHAR(255)
+);
+
+CREATE TABLE GESTIONNAIRES (
+    idGestionnaire INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    telephone VARCHAR(15) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    motDePasse VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE LIVREURS (
+    idLivreur INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    telephone VARCHAR(15) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    motDePasse VARCHAR(255) NOT NULL,
+    estActif BOOLEAN DEFAULT TRUE
+);
+
+-- 2. TABLES DES PRODUITS ET COMPOSITION
+------------------------------------------------------------
+CREATE TABLE COMPLEMENTS (
+    idComplement INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(100) NOT NULL,
+    prix DECIMAL(10, 2) NOT NULL,
+    image VARCHAR(255),
+    typeComplement ENUM('Boisson', 'Frites', 'Sauce', 'Autre') NOT NULL, -- 'Autre' pour généraliser les compléments
+    estArchive BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE BURGERS (
+    idBurger INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(100) NOT NULL,
+    prix DECIMAL(10, 2) NOT NULL,
+    image VARCHAR(255),
+    estArchive BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE MENUS (
+    idMenu INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(100) NOT NULL,
+    prix DECIMAL(10, 2) NOT NULL, -- Prix stocké pour l'historique
+    image VARCHAR(255),
+    estArchive BOOLEAN DEFAULT FALSE
+);
+
+-- Table COMPOSITION_MENUS (Définit ce qui compose un Menu, 1-to-1 avec MENUS)
+CREATE TABLE COMPOSITION_MENUS (
+    idMenu INT PRIMARY KEY,
+    idBurger INT NOT NULL,
+    idBoisson INT NOT NULL,  -- FK vers COMPLEMENTS
+    idFrites INT NOT NULL,   -- FK vers COMPLEMENTS
+
+    FOREIGN KEY (idMenu) REFERENCES MENUS(idMenu),
+    FOREIGN KEY (idBurger) REFERENCES BURGERS(idBurger),
+    FOREIGN KEY (idBoisson) REFERENCES COMPLEMENTS(idComplement),
+    FOREIGN KEY (idFrites) REFERENCES COMPLEMENTS(idComplement)
+);
+
+-- 3. TABLES DES COMMANDES ET PAIEMENTS
+------------------------------------------------------------
+CREATE TABLE COMMANDES (
+    idCommande INT PRIMARY KEY AUTO_INCREMENT,
+    idClient INT NOT NULL,
+    dateCommande DATETIME DEFAULT CURRENT_TIMESTAMP,
+    statut ENUM('EN_COURS', 'VALIDE', 'PRET', 'TERMINE', 'ANNULE') DEFAULT 'EN_COURS',
+    modeConsommation ENUM('SUR_PLACE', 'A_RECUPERER', 'A_LIVRER') NOT NULL,
+    montantTotal DECIMAL(10, 2) DEFAULT 0.0, -- Montant final incluant livraison si applicable
+
+    FOREIGN KEY (idClient) REFERENCES CLIENTS(idClient)
+);
+
+CREATE TABLE PAIEMENTS (
+    idPaiement INT PRIMARY KEY AUTO_INCREMENT,
+    idCommande INT UNIQUE NOT NULL, -- Assure le One-to-One : un paiement unique par commande
+    datePaiement DATETIME DEFAULT CURRENT_TIMESTAMP,
+    montant DECIMAL(10, 2) NOT NULL,
+    modePaiement ENUM('Wave', 'OM') NOT NULL,
+
+    FOREIGN KEY (idCommande) REFERENCES COMMANDES(idCommande)
+);
+
+-- 4. TABLES DE LOGISTIQUE
+------------------------------------------------------------
+CREATE TABLE ZONES (
+    idZone INT PRIMARY KEY AUTO_INCREMENT,
+    nomZone VARCHAR(100) NOT NULL,
+    prixLivraison DECIMAL(10, 2) NOT NULL,
+    quartiers TEXT
+);
+
+-- Table LIVRAISON (Pivot entre Commande, Livreur et Zone pour les commandes 'A_LIVRER')
+CREATE TABLE LIVRAISON (
+    idCommande INT PRIMARY KEY, -- FK vers COMMANDES (One-to-One)
+    idLivreur INT, -- Peut être NULL si non encore affecté
+    idZone INT NOT NULL,
+    dateAffectation DATETIME,
+    dateLivraison DATETIME, -- Date réelle de livraison
+    statutLivraison ENUM('AFFECTEE', 'EN_COURS', 'LIVREE') DEFAULT 'AFFECTEE',
+
+    FOREIGN KEY (idCommande) REFERENCES COMMANDES(idCommande),
+    FOREIGN KEY (idLivreur) REFERENCES LIVREURS(idLivreur),
+    FOREIGN KEY (idZone) REFERENCES ZONES(idZone)
+);
+
+-- 5. TABLES DE JOINTURE DES LIGNES DE COMMANDE
+------------------------------------------------------------
+
+-- LIGNE COMMANDE MENU
+CREATE TABLE LIGNE_COMMANDES_MENU (
+    idCommande INT,
+    idMenu INT,
+    quantite INT NOT NULL,
+    prixUnitaire DECIMAL(10, 2), -- Prix du menu au moment de la commande
+    PRIMARY KEY (idCommande, idMenu),
+    FOREIGN KEY (idCommande) REFERENCES COMMANDES(idCommande),
+    FOREIGN KEY (idMenu) REFERENCES MENUS(idMenu)
+);
+
+-- LIGNE COMMANDE BURGER (Pour les burgers vendus seuls)
+CREATE TABLE LIGNE_COMMANDES_BURGER (
+    idCommande INT,
+    idBurger INT,
+    quantite INT NOT NULL,
+    prixUnitaire DECIMAL(10, 2),
+    PRIMARY KEY (idCommande, idBurger),
+    FOREIGN KEY (idCommande) REFERENCES COMMANDES(idCommande),
+    FOREIGN KEY (idBurger) REFERENCES BURGERS(idBurger)
+);
+
+-- LIGNE COMMANDE COMPLEMENTS (Pour les compléments vendus seuls ou ajoutés au burger simple)
+CREATE TABLE LIGNE_COMMANDES_COMPLEMENT (
+    idCommande INT,
+    idComplement INT,
+    quantite INT NOT NULL,
+    prixUnitaire DECIMAL(10, 2),
+    PRIMARY KEY (idCommande, idComplement),
+    FOREIGN KEY (idCommande) REFERENCES COMMANDES(idCommande),
+    FOREIGN KEY (idComplement) REFERENCES COMPLEMENTS(idComplement)
+);
+
