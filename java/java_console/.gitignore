@@ -1,4 +1,4 @@
-"target/" 
-".vscode/" 
-"dependency-reduced-pom.xml" 
-"*.class" 
+target/ 
+dependency-reduced-pom.xml 
+*.class 
+.vscode/ 
