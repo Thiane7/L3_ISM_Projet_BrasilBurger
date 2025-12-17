@@ -1,0 +1,7 @@
+com\brasilburger\app\service\CatalogueService.class
+com\brasilburger\app\model\Burger.class
+com\brasilburger\app\enums\TypeComplement.class
+com\brasilburger\app\model\Menu.class
+com\brasilburger\app\service\DatabaseService.class
+com\brasilburger\app\model\Complement.class
+com\brasilburger\app\MainApp.class
