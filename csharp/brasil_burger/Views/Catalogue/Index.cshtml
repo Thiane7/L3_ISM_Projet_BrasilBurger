@@ -1,0 +1,59 @@
+@model brasil_burger.Models.CatalogueViewModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+        <div class="d-flex gap-4">
+            <a href="#" class="text-orange fw-bold border-bottom border-orange pb-2">
+                <i class="bi bi-funnel"></i> Catalogue
+            </a>
+            <a href="#" class="text-secondary"><i class="bi bi-cart"></i> Panier</a>
+            <a href="#" class="text-secondary"><i class="bi bi-box"></i> Mes commandes</a>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+        <button class="btn btn-orange px-4">Tous</button>
+        <button class="btn btn-outline-secondary px-4">Burgers</button>
+        <button class="btn btn-outline-secondary px-4">Menus</button>
+    </div>
+
+    <h4 class="mb-4">Menus</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        @foreach (var menu in Model.Menus) {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <img src="@menu.Image" class="card-img-top rounded-top-4" alt="@menu.Nom">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">@menu.Nom</h5>
+                        <ul class="list-unstyled text-secondary small mb-4">
+                            <li>• Composition auto...</li> @* Ici on pourra lister les produits liés *@
+                        </ul>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-orange fw-bold fs-5">@menu.Prix FCFA</span>
+                            <div>
+                                <a href="#" class="text-secondary me-2"><i class="bi bi-info-circle"></i></a>
+                                <button class="btn btn-orange btn-sm px-3 rounded-3">+ Ajouter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h4 class="mb-4">Compléments</h4>
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+        @foreach (var comp in Model.Complements) {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <img src="@comp.Image" class="card-img-top rounded-top-4" style="height: 120px; object-fit: cover;">
+                    <div class="card-body p-2 text-center">
+                        <h6 class="fw-bold mb-1">@comp.Nom</h6>
+                        <p class="text-orange small fw-bold mb-2">@comp.Prix FCFA</p>
+                        <button class="btn btn-orange btn-sm w-100 rounded-3">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
