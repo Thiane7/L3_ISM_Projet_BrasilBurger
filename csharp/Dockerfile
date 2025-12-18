@@ -20,7 +20,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Configuration du port pour Render
+
 ENV ASPNETCORE_URLS=http://+:10000
 EXPOSE 10000
 
