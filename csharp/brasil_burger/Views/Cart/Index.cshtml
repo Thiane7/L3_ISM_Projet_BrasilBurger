@@ -33,10 +33,91 @@
                     <span class="fw-bold fs-5">Total</span>
                     <span class="text-orange fw-bold fs-4">@Model.Sum(x => x.Total) FCFA</span>
                 </div>
-                <button class="btn btn-orange w-100 py-3 rounded-3 fw-bold shadow">
-                    <i class="bi bi-credit-card-2-back me-2"></i> Commander
+                <button class="btn btn-orange w-100 py-3 fw-bold rounded-3 mt-3" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#checkoutModal">
+                  <i class="bi bi-credit-card-2-back me-2"></i> Commander
                 </button>
             </div>
         }
     </div>
 </div>
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 p-3">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="fw-bold">Finaliser la commande</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form asp-controller="Orders" asp-action="PlaceOrder" method="post">
+                <div class="modal-body">
+                    <p class="mb-2 fw-semibold">Type de commande</p>
+                    <div class="row g-2 mb-4">
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="orderType" id="type1" value="Sur place" required>
+                            <label class="btn btn-outline-selection w-100 py-2" for="type1">Sur place</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="orderType" id="type2" value="À emporter" checked>
+                            <label class="btn btn-outline-selection w-100 py-2" for="type2">À emporter</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="orderType" id="type3" value="Livraison">
+                            <label class="btn btn-outline-selection w-100 py-2" for="type3">Livraison</label>
+                        </div>
+                    </div>
+
+                    <p class="mb-2 fw-semibold">Méthode de paiement</p>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6">
+                            <input type="radio" class="btn-check" name="paymentMethod" id="pay1" value="Wave" checked required>
+                            <label class="btn btn-outline-selection w-100 py-2" for="pay1">Wave</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="radio" class="btn-check" name="paymentMethod" id="pay2" value="Orange Money">
+                            <label class="btn btn-outline-selection w-100 py-2" for="pay2">Orange Money</label>
+                        </div>
+                    </div>
+
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Sous-total</span>
+                            <span class="fw-bold">@Model.Total FCFA</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Total à payer</span>
+                            <span class="text-orange fw-bold fs-5">@Model.Total FCFA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 rounded-3" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-orange flex-grow-1 py-2 rounded-3 fw-bold">
+                        <i class="bi bi-credit-card me-2"></i> Payer @Model.Total FCFA
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    
+    .btn-outline-selection {
+        border: 1.5px solid #dee2e6;
+        color: #6c757d;
+        background: white;
+        border-radius: 10px;
+        font-weight: 500;
+    }
+    .btn-check:checked + .btn-outline-selection {
+        border-color: #FF6B00;
+        color: #FF6B00;
+        background-color: rgba(255, 107, 0, 0.05);
+    }
+    .text-orange { color: #FF6B00; }
+    .btn-orange { background-color: #FF6B00; color: white; border: none; }
+    .btn-orange:hover { background-color: #e66000; color: white; }
+</style>
