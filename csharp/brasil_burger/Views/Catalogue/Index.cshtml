@@ -1,89 +1,115 @@
-@model brasil_burger.Models.CatalogueViewModel
+@model brasil_burger.ViewModels.CatalogueViewModel
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <div class="d-flex gap-4">
-            <a href="#" class="text-orange fw-bold border-bottom border-orange pb-2">
-                <i class="bi bi-funnel"></i> Catalogue
-            </a>
-            <a href="#" class="text-secondary"><i class="bi bi-cart"></i> Panier</a>
-            <a href="#" class="text-secondary"><i class="bi bi-box"></i> Mes commandes</a>
-        </div>
-    </div>
+    <h2 class="fw-bold mb-4">Notre Catalogue</h2>
 
-    <div class="d-flex gap-2 mb-4">
-        <a asp-action="Index" asp-route-filter="Tous" class="btn @(ViewBag.SelectedFilter == null || ViewBag.SelectedFilter.ToString() == "Tous" ? "btn-orange" : "btn-outline-secondary") px-4">Tous</a>
-        <a asp-action="Index" asp-route-filter="Burgers" class="btn @(ViewBag.SelectedFilter != null && ViewBag.SelectedFilter.ToString().Equals("Burgers", System.StringComparison.OrdinalIgnoreCase) ? "btn-orange" : "btn-outline-secondary") px-4">Burgers</a>
-        <a asp-action="Index" asp-route-filter="Menus" class="btn @(ViewBag.SelectedFilter != null && ViewBag.SelectedFilter.ToString().Equals("Menus", System.StringComparison.OrdinalIgnoreCase) ? "btn-orange" : "btn-outline-secondary") px-4">Menus</a>
-        <a asp-action="Index" asp-route-filter="Complements" class="btn @(ViewBag.SelectedFilter != null && (ViewBag.SelectedFilter.ToString().Equals("Complements", System.StringComparison.OrdinalIgnoreCase) || ViewBag.SelectedFilter.ToString().Equals("Compléments", System.StringComparison.OrdinalIgnoreCase)) ? "btn-orange" : "btn-outline-secondary") px-4">Compléments</a>
-    </div>
-
-    @if (Model.Menus.Any()) {
-        <h4 class="mb-4">Menus</h4>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-            @foreach (var menu in Model.Menus) {
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm rounded-4">
-                    <img src="@menu.Image" class="card-img-top rounded-top-4" alt="@menu.Nom">
+    <div class="row">
+        @foreach (var burger in Model.Burgers)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="/img/vrai_image/@burger.Image" class="card-img-top p-2 rounded-5" alt="@burger.Nom" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
-                        <h5 class="card-title fw-bold">@menu.Nom</h5>
-                        <ul class="list-unstyled text-secondary small mb-4">
-                            <li>• Composition auto...</li> @* Ici on pourra lister les produits liés *@
-                        </ul>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-orange fw-bold fs-5">@menu.Prix FCFA</span>
-                            <div>
-                                <a href="#" class="text-secondary me-2"><i class="bi bi-info-circle"></i></a>
-                                <button class="btn btn-orange btn-sm px-3 rounded-3">+ Ajouter</button>
+                        <h5 class="fw-bold">@burger.Nom</h5>
+                        <p class="text-orange fw-bold fs-5">@burger.Prix FCFA</p>
+                        
+                        <button class="btn btn-orange w-100 rounded-3 py-2 fw-bold" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modal-@burger.Id">
+                            Ajouter au panier
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-@burger.Id" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0">
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="id" value="@burger.Id" />
+                            <input type="hidden" name="nom" value="@burger.Nom" />
+                            <input type="hidden" name="prix" value="@burger.Prix" />
+                            <input type="hidden" name="image" value="@burger.Image" />
+                            <input type="hidden" name="type" value="Burger" />
+                            <input type="hidden" name="extraPrix" class="extra-prix-input" value="0" />
+
+                            <div class="modal-body p-4">
+                                <p class="text-muted small mb-2">Personnalise votre commande</p>
+                                
+                                <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="fw-bold mb-0">@burger.Nom</h5>
+                                        <span class="text-orange fw-bold base-price" data-price="@burger.Prix">@burger.Prix FCFA</span>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold mb-3">Ajouter des compléments</h6>
+                                <div class="row g-2">
+                                    @foreach (var comp in Model.Complements)
+                                    {
+                                        <div class="col-6">
+                                            <div class="border rounded-3 p-2 d-flex align-items-center justify-content-between">
+                                                <div class="form-check w-100">
+                                                    <input class="form-check-input complement-check" type="checkbox" 
+                                                           name="selectedComplements" value="@comp.Nom" 
+                                                           id="comp-@burger.Id-@comp.Id" 
+                                                           data-price="@comp.Prix">
+                                                    <label class="form-check-label small d-block" for="comp-@burger.Id-@comp.Id">
+                                                        <strong>@comp.Nom</strong><br>
+                                                        <span class="text-muted">+@comp.Prix FCFA</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                    <span class="fw-bold">Total</span>
+                                    <span class="text-orange fw-bold fs-5 total-price-display">@burger.Prix FCFA</span>
+                                </div>
                             </div>
-                        </div>
+
+                            <div class="modal-footer border-0 p-4 pt-0">
+                                <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 rounded-3" data-bs-dismiss="modal">Annuler</button>
+                                <button type="submit" class="btn btn-orange flex-grow-1 py-2 rounded-3 fw-bold">Ajouter au panier</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         }
-            }
-        </div>
-    }
-
-    @if (Model.Burgers.Any()) {
-        <h4 class="mb-4">Burgers</h4>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-            @foreach (var burger in Model.Burgers) {
-                <div class="col">
-                    <div class="card h-100 border-0 shadow-sm rounded-4">
-                        <img src="@burger.Image" class="card-img-top rounded-top-4" alt="@burger.Nom">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@burger.Nom</h5>
-                            <p class="text-secondary small mb-4">Description rapide...</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-orange fw-bold fs-5">@burger.Prix FCFA</span>
-                                <div>
-                                    <a href="#" class="text-secondary me-2"><i class="bi bi-info-circle"></i></a>
-                                    <button class="btn btn-orange btn-sm px-3 rounded-3">+ Ajouter</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-
-    @if (Model.Complements.Any()) {
-        <h4 class="mb-4">Compléments</h4>
-        <div class="row row-cols-2 row-cols-md-4 g-4">
-            @foreach (var comp in Model.Complements) {
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm rounded-4">
-                    <img src="@comp.Image" class="card-img-top rounded-top-4" style="height: 120px; object-fit: cover;">
-                    <div class="card-body p-2 text-center">
-                        <h6 class="fw-bold mb-1">@comp.Nom</h6>
-                        <p class="text-orange small fw-bold mb-2">@comp.Prix FCFA</p>
-                        <button class="btn btn-orange btn-sm w-100 rounded-3">Ajouter</button>
-                    </div>
-                </div>
-            </div>
-            }
-        </div>
-    }
+    </div>
 </div>
+
+@section Scripts {
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modals = document.querySelectorAll('.modal');
+
+        modals.forEach(modal => {
+            const checkboxes = modal.querySelectorAll('.complement-check');
+            const totalPriceDisplay = modal.querySelector('.total-price-display');
+            const extraPrixInput = modal.querySelector('.extra-prix-input');
+            const basePrice = parseFloat(modal.querySelector('.base-price').dataset.price);
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    let extraTotal = 0;
+
+                    
+                    modal.querySelectorAll('.complement-check:checked').forEach(checkedBox => {
+                        extraTotal += parseFloat(checkedBox.dataset.price);
+                    });
+
+                    const finalTotal = basePrice + extraTotal;
+                    totalPriceDisplay.innerText = finalTotal + " FCFA";
+
+                    
+                    extraPrixInput.value = extraTotal;
+                });
+            });
+        });
+    });
+</script>
+}

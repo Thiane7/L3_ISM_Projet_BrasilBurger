@@ -1,42 +1,42 @@
 @model List<brasil_burger.Models.CartItem>
 
-<div class="container mt-5">
-    <h2 class="fw-bold mb-4">Votre Panier</h2>
+<div class="container mt-5" style="max-width: 900px;">
+    <div class="card shadow-sm border-0 rounded-4 p-4">
+        <h5 class="fw-bold mb-4">Votre panier (@Model.Count articles)</h5>
 
-    @if (Model.Count == 0) {
-        <div class="alert alert-info">Votre panier est vide. <a href="/">Retour au catalogue</a></div>
-    } else {
-        <table class="table align-middle">
-            <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th>Prix</th>
-                    <th>Quantité</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model) {
-                    <tr>
-                        <td>
-                            <img src="/img/vrai_image/@item.Image" width="50" class="rounded me-2">
-                            @item.Nom
-                        </td>
-                        <td>@item.Prix €</td>
-                        <td>@item.Quantite</td>
-                        <td>@(item.Total) €</td>
-                        <td>
-                            <a asp-action="Remove" asp-route-id="@item.Id" asp-route-type="@item.Type" class="text-danger">Supprimer</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        @if (!Model.Any()) {
+            <p class="text-center py-5">Votre panier est vide. <a href="/" class="text-orange">Voir le catalogue</a></p>
+        } else {
+            @foreach (var item in Model) {
+                <div class="d-flex align-items-center justify-content-between p-3 mb-3 bg-light rounded-3 shadow-sm">
+                    <div class="d-flex align-items-center">
+                        <div class="ms-3">
+                            <h6 class="fw-bold mb-0">@item.Nom</h6>
+                            <span class="text-orange fw-bold">@item.Total FCFA</span>
+                            @if(item.SelectedComplements.Any()){
+                                <small class="text-muted small">+ @string.Join(", ", item.SelectedComplements)</small>
+                            }
+                        </div>
+                    </div>
+                    <a asp-action="Remove" asp-route-uniqueId="@item.UniqueId" class="text-danger">
+                        <i class="bi bi-trash3-fill fs-5"></i>
+                    </a>
+                </div>
+            }
 
-        <div class="text-end mt-4">
-            <h4 class="fw-bold">Total : @Model.Sum(x => x.Total) €</h4>
-            <button class="btn btn-warning btn-lg fw-bold px-5 rounded-pill">Commander</button>
-        </div>
-    }
+            <div class="mt-5 border-top pt-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Sous-total</span>
+                    <span class="fw-bold">@Model.Sum(x => x.Total) FCFA</span>
+                </div>
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold fs-5">Total</span>
+                    <span class="text-orange fw-bold fs-4">@Model.Sum(x => x.Total) FCFA</span>
+                </div>
+                <button class="btn btn-orange w-100 py-3 rounded-3 fw-bold shadow">
+                    <i class="bi bi-credit-card-2-back me-2"></i> Commander
+                </button>
+            </div>
+        }
+    </div>
 </div>
