@@ -75,6 +75,32 @@
                 </div>
             </div>
         }
+        @* Affichage des Compléments seuls *@
+        @foreach (var comp in Model.Complements)
+        {
+            <div class="col-md-3 mb-4 product-item" data-category="Complement">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden text-center">
+                    @* Utilisation d'une icône ou d'une image par défaut si l'image est nulle *@
+                    <div class="bg-light p-4">
+                        <i class="bi bi-plus-circle text-orange fs-1"></i>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="fw-bold">@comp.Nom</h6>
+                        <p class="text-orange fw-bold">@comp.Prix FCFA</p>
+                        
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="id" value="@comp.Id" />
+                            <input type="hidden" name="nom" value="@comp.Nom" />
+                            <input type="hidden" name="prix" value="@comp.Prix" />
+                            <input type="hidden" name="type" value="Complement" />
+                            <button type="submit" class="btn btn-sm btn-outline-orange w-100 rounded-pill fw-bold">
+                                + Ajouter
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
 
         @* Affichage des Menus *@
         @foreach (var menu in Model.Menus)
@@ -119,7 +145,7 @@
 
 @section Scripts {
 <script>
-    // 1. Fonction de filtrage des catégories
+    
     function filterCategory(category, element) {
         document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
@@ -134,7 +160,6 @@
         });
     }
 
-    // 2. Logique de calcul du prix dans la modale
     document.addEventListener("DOMContentLoaded", function () {
         const modals = document.querySelectorAll('.modal');
         modals.forEach(modal => {
