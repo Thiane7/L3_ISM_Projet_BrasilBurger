@@ -3,8 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace brasil_burger.Models
 {
-   
-
     [Table("paiements")]
     public class Paiement
     {
@@ -22,6 +20,6 @@ namespace brasil_burger.Models
         public decimal Montant { get; set; }
 
         [Column("mode_paiement")]
-        public string ModePaiement { get; set; } 
+        public string ModePaiement { get; set; } = string.Empty;
     }
 }
