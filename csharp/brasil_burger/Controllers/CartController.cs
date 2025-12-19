@@ -4,36 +4,32 @@ using System.Text.Json;
 
 namespace brasil_burger.Controllers;
 
-public class CartController : Controller
-{
-   
-    public IActionResult Index()
-    {
+public class CartController : Controller {
+    public IActionResult Index() {
         var cart = GetCart();
         return View(cart);
     }
 
     [HttpPost]
-    public IActionResult AddToCart(int id, string nom, decimal prix, string image, string type)
-    {
+    public IActionResult AddToCart(int id, string nom, decimal prix, string image, List<string> selectedComplements, decimal extraPrix) {
         var cart = GetCart();
-        var item = cart.FirstOrDefault(i => i.Id == id && i.Type == type);
-
-        if (item == null) {
-            cart.Add(new CartItem { Id = id, Nom = nom, Prix = prix, Image = image, Quantite = 1, Type = type });
-        } else {
-            item.Quantite++;
-        }
+        
+        cart.Add(new CartItem {
+            Id = id,
+            Nom = nom,
+            Prix = prix,
+            Image = image,
+            SelectedComplements = selectedComplements,
+            PrixComplements = extraPrix
+        });
 
         SaveCart(cart);
         return RedirectToAction("Index");
     }
 
-    
-    public IActionResult Remove(int id, string type)
-    {
+    public IActionResult Remove(string uniqueId) {
         var cart = GetCart();
-        cart.RemoveAll(i => i.Id == id && i.Type == type);
+        cart.RemoveAll(x => x.UniqueId == uniqueId);
         SaveCart(cart);
         return RedirectToAction("Index");
     }
@@ -43,7 +39,6 @@ public class CartController : Controller
         return json == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(json)!;
     }
 
-    private void SaveCart(List<CartItem> cart) {
+    private void SaveCart(List<CartItem> cart) => 
         HttpContext.Session.SetString("Cart", JsonSerializer.Serialize(cart));
-    }
 }
