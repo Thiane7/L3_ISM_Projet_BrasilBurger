@@ -1,28 +1,31 @@
 @model brasil_burger.Models.CatalogueViewModel
 
 <div class="container mt-4">
-    <h2 class="fw-bold mb-4">Notre Catalogue</h2>
+    <div class="d-flex justify-content-start gap-4 mb-5 border-bottom pb-2">
+        <button class="btn-filter active" onclick="filterCategory('all', this)">Tous</button>
+        <button class="btn-filter" onclick="filterCategory('Menu', this)">Menus</button>
+        <button class="btn-filter" onclick="filterCategory('Burger', this)">Burgers</button>
+        <button class="btn-filter" onclick="filterCategory('Complement', this)">Compléments</button>
+    </div>
 
-    <div class="row">
+    <div class="row" id="catalogue-container">
+        @* Affichage des Burgers *@
         @foreach (var burger in Model.Burgers)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 product-item" data-category="Burger">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
                     <img src="/img/vrai_image/@burger.Image" class="card-img-top p-2 rounded-5" alt="@burger.Nom" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="fw-bold">@burger.Nom</h5>
                         <p class="text-orange fw-bold fs-5">@burger.Prix FCFA</p>
-                        
-                        <button class="btn btn-orange w-100 rounded-3 py-2 fw-bold" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modal-@burger.Id">
+                        <button class="btn btn-orange w-100 rounded-3 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#modal-burger-@burger.Id">
                             Ajouter au panier
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="modal fade" id="modal-@burger.Id" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="modal-burger-@burger.Id" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content rounded-4 border-0">
                         <form asp-controller="Cart" asp-action="AddToCart" method="post">
@@ -35,7 +38,6 @@
 
                             <div class="modal-body p-4">
                                 <p class="text-muted small mb-2">Personnalise votre commande</p>
-                                
                                 <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center">
                                     <div>
                                         <h5 class="fw-bold mb-0">@burger.Nom</h5>
@@ -50,30 +52,45 @@
                                         <div class="col-6">
                                             <div class="border rounded-3 p-2 d-flex align-items-center justify-content-between">
                                                 <div class="form-check w-100">
-                                                    <input class="form-check-input complement-check" type="checkbox" 
-                                                           name="selectedComplements" value="@comp.Nom" 
-                                                           id="comp-@burger.Id-@comp.Id" 
-                                                           data-price="@comp.Prix">
-                                                    <label class="form-check-label small d-block" for="comp-@burger.Id-@comp.Id">
-                                                        <strong>@comp.Nom</strong><br>
-                                                        <span class="text-muted">+@comp.Prix FCFA</span>
+                                                    <input class="form-check-input complement-check" type="checkbox" name="selectedComplements" value="@comp.Nom" id="comp-b-@burger.Id-@comp.Id" data-price="@comp.Prix">
+                                                    <label class="form-check-label small d-block" for="comp-b-@burger.Id-@comp.Id">
+                                                        <strong>@comp.Nom</strong><br><span class="text-muted">+@comp.Prix FCFA</span>
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     }
                                 </div>
-
                                 <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                                     <span class="fw-bold">Total</span>
                                     <span class="text-orange fw-bold fs-5 total-price-display">@burger.Prix FCFA</span>
                                 </div>
                             </div>
-
                             <div class="modal-footer border-0 p-4 pt-0">
                                 <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 rounded-3" data-bs-dismiss="modal">Annuler</button>
-                                <button type="submit" class="btn btn-orange flex-grow-1 py-2 rounded-3 fw-bold">Ajouter au panier</button>
+                                <button type="submit" class="btn btn-orange flex-grow-1 py-2 rounded-3 fw-bold">Ajouter</button>
                             </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @* Affichage des Menus *@
+        @foreach (var menu in Model.Menus)
+        {
+            <div class="col-md-4 mb-4 product-item" data-category="Menu">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="/img/vrai_image/@menu.Image" class="card-img-top p-2 rounded-5" alt="@menu.Nom" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="fw-bold">@menu.Nom (Menu)</h5>
+                        <p class="text-orange fw-bold fs-5">@menu.Prix FCFA</p>
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="id" value="@menu.Id" />
+                            <input type="hidden" name="nom" value="@menu.Nom" />
+                            <input type="hidden" name="prix" value="@menu.Prix" />
+                            <input type="hidden" name="type" value="Menu" />
+                            <button type="submit" class="btn btn-orange w-100 rounded-3 py-2 fw-bold">Ajouter au panier</button>
                         </form>
                     </div>
                 </div>
@@ -82,33 +99,64 @@
     </div>
 </div>
 
+<style>
+    .btn-filter {
+        border: none;
+        background: none;
+        font-weight: bold;
+        color: #6c757d;
+        padding-bottom: 8px;
+        transition: 0.3s;
+    }
+    .btn-filter.active {
+        color: #FF6B00;
+        border-bottom: 3px solid #FF6B00;
+    }
+    .text-orange { color: #FF6B00; }
+    .btn-orange { background-color: #FF6B00; color: white; border: none; }
+    .btn-orange:hover { background-color: #e66000; color: white; }
+</style>
+
 @section Scripts {
 <script>
+    // 1. Fonction de filtrage des catégories
+    function filterCategory(category, element) {
+        document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+
+        const items = document.querySelectorAll('.product-item');
+        items.forEach(item => {
+            if (category === 'all' || item.getAttribute('data-category') === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // 2. Logique de calcul du prix dans la modale
     document.addEventListener("DOMContentLoaded", function () {
         const modals = document.querySelectorAll('.modal');
-
         modals.forEach(modal => {
             const checkboxes = modal.querySelectorAll('.complement-check');
             const totalPriceDisplay = modal.querySelector('.total-price-display');
             const extraPrixInput = modal.querySelector('.extra-prix-input');
-            const basePrice = parseFloat(modal.querySelector('.base-price').dataset.price);
+            const basePriceElement = modal.querySelector('.base-price');
 
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    let extraTotal = 0;
-
-                    
-                    modal.querySelectorAll('.complement-check:checked').forEach(checkedBox => {
-                        extraTotal += parseFloat(checkedBox.dataset.price);
+            if (basePriceElement) {
+                const basePrice = parseFloat(basePriceElement.dataset.price);
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function () {
+                        let extraTotal = 0;
+                        modal.querySelectorAll('.complement-check:checked').forEach(checkedBox => {
+                            extraTotal += parseFloat(checkedBox.dataset.price);
+                        });
+                        const finalTotal = basePrice + extraTotal;
+                        totalPriceDisplay.innerText = finalTotal + " FCFA";
+                        extraPrixInput.value = extraTotal;
                     });
-
-                    const finalTotal = basePrice + extraTotal;
-                    totalPriceDisplay.innerText = finalTotal + " FCFA";
-
-                    
-                    extraPrixInput.value = extraTotal;
                 });
-            });
+            }
         });
     });
 </script>
