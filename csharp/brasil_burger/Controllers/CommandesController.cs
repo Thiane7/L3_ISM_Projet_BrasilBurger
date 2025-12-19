@@ -5,18 +5,17 @@ using System.Text.Json;
 
 namespace brasil_burger.Controllers
 {
-    
     public class CommandesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+       
+        private readonly BrasilBurgerContext _context;
 
-        
-        public CommandesController(ApplicationDbContext context)
+       
+        public CommandesController(BrasilBurgerContext context)
         {
             _context = context;
         }
 
-       
         [HttpPost]
         public async Task<IActionResult> PlaceOrder(string orderType, string paymentMethod)
         {
@@ -25,7 +24,7 @@ namespace brasil_burger.Controllers
                 return RedirectToAction("Index", "Catalogue");
 
             var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cartJson);
-            var total = cartItems.Sum(i => i.Prix + i.ExtraPrix);
+           var total = cartItems.Sum(i => i.Total); 
 
             
             var nouvelleCommande = new Commande
@@ -43,7 +42,7 @@ namespace brasil_burger.Controllers
             
             var nouveauPaiement = new Paiement
             {
-                IdCommande = nouvelleCommande.Id,
+                IdCommande = nouvelleCommande.Id, 
                 Montant = total,
                 ModePaiement = paymentMethod == "Orange Money" ? "OM" : "Wave",
                 DatePaiement = DateTime.Now
@@ -52,7 +51,10 @@ namespace brasil_burger.Controllers
             _context.Paiements.Add(nouveauPaiement);
             await _context.SaveChangesAsync();
 
+          
             HttpContext.Session.Remove("Cart");
+
+           
             return View("Success", nouvelleCommande);
         }
 
