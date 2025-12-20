@@ -1,0 +1,22 @@
+<div class="card p-4 mx-auto mt-5 shadow" style="max-width: 450px;">
+    <h3 class="text-center">Créer un compte</h3>
+    <form asp-action="Register" method="post">
+        <div class="mb-3">
+            <label class="form-label">Nom complet</label>
+            <input type="text" name="nom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="tel" name="telephone" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mot de passe</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">S'inscrire</button>
+    </form>
+</div>

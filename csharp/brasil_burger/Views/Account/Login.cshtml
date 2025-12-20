@@ -1,0 +1,36 @@
+@model brasil_burger.Models.Client
+
+<div class="auth-container" style="background: linear-gradient(to bottom, #ff4e00, #ec2f06); min-height: 100vh; display: flex; justify-content: center; align-items: center;">
+    <div class="card p-4 shadow-lg" style="width: 400px; border-radius: 15px;">
+        <div class="text-center mb-4">
+            <img src="~/images/logo.png" alt="Logo" style="width: 80px;" />
+            <h3 class="mt-2 text-orange">Brasil Burger</h3>
+            <p class="text-muted">Gestion des Commandes</p>
+        </div>
+
+        <div class="btn-group w-100 mb-4">
+            <button class="btn btn-outline-orange active">Client</button>
+            <button class="btn btn-outline-orange">Gestionnaire</button>
+        </div>
+
+        <form asp-action="Login" method="post">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            <div class="mb-3">
+                <label class="form-label text-muted">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="votre@email.com" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted">Mot de passe</label>
+                <input type="password" name="password" class="form-control" placeholder="........" required>
+            </div>
+            <button type="submit" class="btn btn-orange w-100 py-2 text-white fw-bold">Se connecter</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <a asp-action="Register" class="text-orange text-decoration-none">Pas de compte ? Créer un compte</a>
+        </div>
+    </div>
+</div>
