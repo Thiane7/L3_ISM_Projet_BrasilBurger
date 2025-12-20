@@ -24,7 +24,7 @@ namespace brasil_burger.Controllers
                 return RedirectToAction("Index", "Catalogue");
 
             var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cartJson);
-           var total = cartItems.Sum(i => i.Total)?? 0; 
+           var total = cartItems.Sum(i => i.Total)?? 0m; 
 
             
             var nouvelleCommande = new Commande
