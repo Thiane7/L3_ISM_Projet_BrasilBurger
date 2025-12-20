@@ -14,7 +14,7 @@ namespace brasil_burger.Models
         public int IdClient { get; set; }
 
         [Column("date_commande")]
-        public DateTime DateCommande { get; set; } = DateTime.Now;
+        public DateTime DateCommande { get; set; } = DateTime.UtcNow;
 
         [Column("statut")]
         public string Statut { get; set; } = "EN_COURS";

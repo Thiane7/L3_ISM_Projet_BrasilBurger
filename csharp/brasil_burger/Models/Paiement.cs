@@ -14,7 +14,7 @@ namespace brasil_burger.Models
         public int IdCommande { get; set; }
 
         [Column("date_paiement")]
-        public DateTime DatePaiement { get; set; } = DateTime.Now;
+        public DateTime DateCommande { get; set; } = DateTime.UtcNow;
 
         [Column("montant")]
         public decimal Montant { get; set; }
