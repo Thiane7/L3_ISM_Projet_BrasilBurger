@@ -43,20 +43,25 @@ namespace brasil_burger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string nom, string email, string telephone, string password)
+        public async Task<IActionResult> Register(string nom, string prenom, string telephone, string email, string password, string adresse)
         {
-            var nouveauClient = new Client {
-                Nom = nom,
-                Prenom = prenom,
-                Email = email,
-                Telephone = telephone,
-                MotDePasse = password
-            };
+            if (ModelState.IsValid)
+            {
+                var nouveauClient = new Client
+                {
+                    Nom = nom,
+                    Prenom = prenom,
+                    Telephone = telephone,
+                    Email = email,
+                    MotDePasse = password, 
+                    Adresse = adresse
+                };
 
-            _context.Clients.Add(nouveauClient);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Login");
+                _context.Clients.Add(nouveauClient);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Login");
+            }
+            return View();
         }
         [HttpGet]
         public IActionResult Register() => View();

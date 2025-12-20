@@ -10,23 +10,28 @@ namespace brasil_burger.Models
         [Column("id_client")]
         public int Id { get; set; }
 
-        [Required]
         [Column("nom")]
+        [Required]
         public string Nom { get; set; } = string.Empty;
 
         [Column("prenom")]
+        [Required]
         public string Prenom { get; set; } = string.Empty;
 
+        [Column("telephone")]
+        [Required]
+        public string Telephone { get; set; } = string.Empty;
+
+        [Column("email")]
         [Required]
         [EmailAddress]
-        [Column("email")]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
         [Column("mot_de_passe")]
+        [Required]
         public string MotDePasse { get; set; } = string.Empty;
 
-        [Column("telephone")]
-        public string? Telephone { get; set; }
+        [Column("adresse")]
+        public string? Adresse { get; set; }
     }
 }
