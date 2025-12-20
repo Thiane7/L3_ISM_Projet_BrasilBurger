@@ -11,4 +11,5 @@ public class BrasilBurgerContext : DbContext {
     public DbSet<Complement> Complements { get; set; }
     public DbSet<Commande> Commandes { get; set; }
     public DbSet<Paiement> Paiements { get; set; }
+    public DbSet<Client> Clients { get; set; }
 }
