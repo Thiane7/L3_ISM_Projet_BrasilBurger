@@ -47,6 +47,7 @@ namespace brasil_burger.Controllers
         {
             var nouveauClient = new Client {
                 Nom = nom,
+                Prenom = prenom,
                 Email = email,
                 Telephone = telephone,
                 MotDePasse = password

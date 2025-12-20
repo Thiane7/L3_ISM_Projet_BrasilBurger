@@ -14,6 +14,9 @@ namespace brasil_burger.Models
         [Column("nom")]
         public string Nom { get; set; } = string.Empty;
 
+        [Column("prenom")]
+        public string Prenom { get; set; } = string.Empty;
+
         [Required]
         [EmailAddress]
         [Column("email")]

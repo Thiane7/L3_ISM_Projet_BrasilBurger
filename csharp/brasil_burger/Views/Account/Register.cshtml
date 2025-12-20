@@ -2,8 +2,12 @@
     <h3 class="text-center">Créer un compte</h3>
     <form asp-action="Register" method="post">
         <div class="mb-3">
-            <label class="form-label">Nom complet</label>
+            <label class="form-label">Nom </label>
             <input type="text" name="nom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Email</label>
