@@ -20,7 +20,7 @@ namespace brasil_burger.Models
         public string Statut { get; set; } = "EN_COURS";
 
         [Column("mode_consommation")]
-        public string ModeConsommation { get; set; } 
+        public string ModeConsommation { get; set; } = string.Empty;
 
         [Column("montant_total")]
         public decimal MontantTotal { get; set; }

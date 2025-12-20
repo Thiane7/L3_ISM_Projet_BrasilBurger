@@ -24,7 +24,7 @@ namespace brasil_burger.Controllers
                 return RedirectToAction("Index", "Catalogue");
 
             var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cartJson);
-           var total = cartItems.Sum(i => i.Total); 
+           var total = cartItems.Sum(i => i.Total)?? 0; 
 
             
             var nouvelleCommande = new Commande
@@ -45,7 +45,7 @@ namespace brasil_burger.Controllers
                 IdCommande = nouvelleCommande.Id, 
                 Montant = total,
                 ModePaiement = paymentMethod == "Orange Money" ? "OM" : "Wave",
-                DatePaiement = DateTime.Now
+                DatePaiement = DateTime.UtcNow,
             };
 
             _context.Paiements.Add(nouveauPaiement);
