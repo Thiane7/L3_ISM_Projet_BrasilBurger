@@ -1,6 +1,7 @@
 @model brasil_burger.Models.CatalogueViewModel
 
 <div class="container mt-4">
+    @* --- FILTRES --- *@
     <div class="d-flex justify-content-start gap-4 mb-5 border-bottom pb-2">
         <button class="btn-filter active" onclick="filterCategory('all', this)">Tous</button>
         <button class="btn-filter" onclick="filterCategory('Menu', this)">Menus</button>
@@ -9,22 +10,27 @@
     </div>
 
     <div class="row" id="catalogue-container">
-        @* Affichage des Burgers *@
+        
+        @* --- SECTION BURGERS --- *@
         @foreach (var burger in Model.Burgers)
         {
             <div class="col-md-4 mb-4 product-item" data-category="Burger">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                    <img src="~/images/@burger.Image" class="card-img-top p-2 rounded-5" alt="@burger.Nom" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
+                    @* Image agrandie à 280px *@
+                    <div style="height: 280px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
+                        <img src="~/images/@burger.Image" class="w-100 h-100" alt="@burger.Nom" style="object-fit: cover; object-position: center;">
+                    </div>
+                    <div class="card-body text-center">
                         <h5 class="fw-bold">@burger.Nom</h5>
                         <p class="text-orange fw-bold fs-5">@burger.Prix FCFA</p>
                         <button class="btn btn-orange w-100 rounded-3 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#modal-burger-@burger.Id">
-                            Ajouter au panier
+                            Voir détails & Ajouter
                         </button>
                     </div>
                 </div>
             </div>
 
+            @* Modal de personnalisation Burger *@
             <div class="modal fade" id="modal-burger-@burger.Id" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content rounded-4 border-0">
@@ -37,24 +43,24 @@
                             <input type="hidden" name="extraPrix" class="extra-prix-input" value="0" />
 
                             <div class="modal-body p-4">
-                                <p class="text-muted small mb-2">Personnalise votre commande</p>
+                                <h5 class="fw-bold mb-3">@burger.Nom</h5>
+                                <p class="text-muted small">Personnalisez votre burger avec nos compléments frais.</p>
+                                
                                 <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="fw-bold mb-0">@burger.Nom</h5>
-                                        <span class="text-orange fw-bold base-price" data-price="@burger.Prix">@burger.Prix FCFA</span>
-                                    </div>
+                                    <span class="fw-bold">Prix de base</span>
+                                    <span class="text-orange fw-bold base-price" data-price="@burger.Prix">@burger.Prix FCFA</span>
                                 </div>
 
-                                <h6 class="fw-bold mb-3">Ajouter des compléments</h6>
+                                <h6 class="fw-bold mb-3">Compléments disponibles</h6>
                                 <div class="row g-2">
                                     @foreach (var comp in Model.Complements)
                                     {
                                         <div class="col-6">
-                                            <div class="border rounded-3 p-2 d-flex align-items-center justify-content-between">
+                                            <div class="border rounded-3 p-2 d-flex align-items-center">
                                                 <div class="form-check w-100">
                                                     <input class="form-check-input complement-check" type="checkbox" name="selectedComplements" value="@comp.Nom" id="comp-b-@burger.Id-@comp.Id" data-price="@comp.Prix">
-                                                    <label class="form-check-label small d-block" for="comp-b-@burger.Id-@comp.Id">
-                                                        <strong>@comp.Nom</strong><br><span class="text-muted">+@comp.Prix FCFA</span>
+                                                    <label class="form-check-label small" for="comp-b-@burger.Id-@comp.Id">
+                                                        <strong>@comp.Nom</strong> <br> +@comp.Prix F
                                                     </label>
                                                 </div>
                                             </div>
@@ -67,25 +73,25 @@
                                 </div>
                             </div>
                             <div class="modal-footer border-0 p-4 pt-0">
-                                <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 rounded-3" data-bs-dismiss="modal">Annuler</button>
-                                <button type="submit" class="btn btn-orange flex-grow-1 py-2 rounded-3 fw-bold">Ajouter</button>
+                                <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-orange flex-grow-1 fw-bold">Ajouter au panier</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         }
-       @* Affichage des Compléments seuls *@
+
+        @* --- SECTION COMPLÉMENTS --- *@
         @foreach (var comp in Model.Complements)
         {
             <div class="col-md-3 mb-4 product-item" data-category="Complement">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden text-center">
-                    
-                    @* Affichage de l'image si elle existe, sinon l'icône par défaut *@
-                    <div class="bg-light" style="height: 160px;">
+                    @* Image des compléments à 200px *@
+                    <div style="height: 200px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
                         @if (!string.IsNullOrEmpty(comp.Image))
                         {
-                            <img src="~/images/@comp.Image" class="img-fluid h-100 w-100" style="object-fit: cover;" alt="@comp.Nom">
+                            <img src="~/images/@comp.Image" class="w-100 h-100" style="object-fit: cover;" alt="@comp.Nom">
                         }
                         else
                         {
@@ -98,31 +104,29 @@
                     <div class="card-body">
                         <h6 class="fw-bold">@comp.Nom</h6>
                         <p class="text-orange fw-bold">@comp.Prix FCFA</p>
-                        
                         <form asp-controller="Cart" asp-action="AddToCart" method="post">
                             <input type="hidden" name="id" value="@comp.Id" />
                             <input type="hidden" name="nom" value="@comp.Nom" />
                             <input type="hidden" name="prix" value="@comp.Prix" />
-                            @* Ajout de l'input hidden pour l'image afin que le panier l'affiche aussi *@
                             <input type="hidden" name="image" value="@comp.Image" />
                             <input type="hidden" name="type" value="Complement" />
-                            
-                            <button type="submit" class="btn btn-sm btn-outline-orange w-100 rounded-pill fw-bold">
-                                + Ajouter
-                            </button>
+                            <button type="submit" class="btn btn-sm btn-outline-orange w-100 rounded-pill fw-bold">+ Ajouter</button>
                         </form>
                     </div>
                 </div>
             </div>
         }
 
-        @* Affichage des Menus *@
+        @* --- SECTION MENUS --- *@
         @foreach (var menu in Model.Menus)
         {
             <div class="col-md-4 mb-4 product-item" data-category="Menu">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                    <img src="~/images/@menu.Image" class="card-img-top p-2 rounded-5" alt="@menu.Nom" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
+                    @* Image des menus à 280px *@
+                    <div style="height: 280px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
+                        <img src="~/images/@menu.Image" class="w-100 h-100" alt="@menu.Nom" style="object-fit: cover; object-position: center;">
+                    </div>
+                    <div class="card-body text-center">
                         <h5 class="fw-bold">@menu.Nom (Menu)</h5>
                         <p class="text-orange fw-bold fs-5">@menu.Prix FCFA</p>
                         <form asp-controller="Cart" asp-action="AddToCart" method="post">
@@ -130,7 +134,7 @@
                             <input type="hidden" name="nom" value="@menu.Nom" />
                             <input type="hidden" name="prix" value="@menu.Prix" />
                             <input type="hidden" name="type" value="Menu" />
-                            <button type="submit" class="btn btn-orange w-100 rounded-3 py-2 fw-bold">Ajouter au panier</button>
+                            <button type="submit" class="btn btn-orange w-100 rounded-3 py-2 fw-bold">Ajouter le Menu</button>
                         </form>
                     </div>
                 </div>
@@ -140,30 +144,20 @@
 </div>
 
 <style>
-    .btn-filter {
-        border: none;
-        background: none;
-        font-weight: bold;
-        color: #6c757d;
-        padding-bottom: 8px;
-        transition: 0.3s;
-    }
-    .btn-filter.active {
-        color: #FF6B00;
-        border-bottom: 3px solid #FF6B00;
-    }
+    .btn-filter { border: none; background: none; font-weight: bold; color: #6c757d; padding-bottom: 8px; transition: 0.3s; }
+    .btn-filter.active { color: #FF6B00; border-bottom: 3px solid #FF6B00; }
     .text-orange { color: #FF6B00; }
     .btn-orange { background-color: #FF6B00; color: white; border: none; }
     .btn-orange:hover { background-color: #e66000; color: white; }
+    .btn-outline-orange { border: 2px solid #FF6B00; color: #FF6B00; }
+    .btn-outline-orange:hover { background-color: #FF6B00; color: white; }
 </style>
 
 @section Scripts {
 <script>
-    
     function filterCategory(category, element) {
         document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
-
         const items = document.querySelectorAll('.product-item');
         items.forEach(item => {
             if (category === 'all' || item.getAttribute('data-category') === category) {
