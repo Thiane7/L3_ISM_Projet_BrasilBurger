@@ -1,0 +1,46 @@
+@model IEnumerable<brasil_burger.Models.Commande>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Mes commandes</h2>
+
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title m-0">Commande #@item.Id</h5>
+                    
+                    @{
+                        // Adaptation des classes CSS aux noms de ta base Neon
+                        var badgeClass = item.Statut switch {
+                            "TERMINE" => "bg-success",
+                            "EN_COURS" => "bg-warning text-dark",
+                            "VALIDE" => "bg-info text-dark",
+                            "PRET" => "bg-primary",
+                            "ANNULE" => "bg-danger",
+                            _ => "bg-secondary"
+                        };
+                        
+                        // Rendre le texte plus lisible (ex: EN_COURS -> En cours)
+                        var displayStatut = item.Statut.Replace("_", " ").ToLower();
+                    }
+                    <span class="badge @badgeClass text-uppercase">@displayStatut</span>
+                </div>
+                
+                <p class="text-muted small mt-1">
+                    @item.DateCommande.ToString("dd/MM/yyyy à HH:mm")
+                </p>
+                
+                <div class="d-flex justify-content-between align-items-end mt-3">
+                    <div>
+                        <span class="text-muted d-block small">Mode :</span>
+                        <strong>@item.ModeConsommation.Replace("_", " ")</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="h5 text-orange m-0">@item.MontantTotal.ToString("N0") FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

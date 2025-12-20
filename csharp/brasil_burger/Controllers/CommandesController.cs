@@ -61,5 +61,15 @@ namespace brasil_burger.Controllers
         {
             return View(commande);
         }
+
+        public async Task<IActionResult> Historique()
+        {
+               
+                var commandes = await _context.Commandes
+                    .OrderByDescending(c => c.DateCommande)
+                    .ToListAsync();
+
+                return View(commandes);
+        }
     }
 }

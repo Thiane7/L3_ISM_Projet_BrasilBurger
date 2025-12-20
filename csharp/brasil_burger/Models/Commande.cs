@@ -24,5 +24,14 @@ namespace brasil_burger.Models
 
         [Column("montant_total")]
         public decimal MontantTotal { get; set; }
+
+        [Column("statut")]
+        public string Statut { get; set; } = "EN_COURS";
+
+        [Column("mode_consommation")]
+        public string ModeConsommation { get; set; } = string.Empty;
+
+
+
     }
 }
