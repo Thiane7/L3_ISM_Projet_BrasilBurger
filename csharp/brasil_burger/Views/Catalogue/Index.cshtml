@@ -16,7 +16,6 @@
         {
             <div class="col-md-4 mb-4 product-item" data-category="Burger">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                    @* Image agrandie à 280px *@
                     <div style="height: 280px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
                         <img src="~/images/@burger.Image" class="w-100 h-100" alt="@burger.Nom" style="object-fit: cover; object-position: center;">
                     </div>
@@ -30,7 +29,7 @@
                 </div>
             </div>
 
-            @* Modal de personnalisation Burger *@
+            @* Modal Burger *@
             <div class="modal fade" id="modal-burger-@burger.Id" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content rounded-4 border-0">
@@ -44,14 +43,17 @@
 
                             <div class="modal-body p-4">
                                 <h5 class="fw-bold mb-3">@burger.Nom</h5>
-                                <p class="text-muted small">Personnalisez votre burger avec nos compléments frais.</p>
-                                
-                                <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center">
+                                <div class="bg-light p-3 rounded-3 mb-4">
+                                    <h6 class="fw-bold small text-uppercase text-muted">Composition :</h6>
+                                    <p class="mb-0">@(string.IsNullOrEmpty(burger.Description) ? "Recette classique préparée à la commande." : burger.Description)</p>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
                                     <span class="fw-bold">Prix de base</span>
                                     <span class="text-orange fw-bold base-price" data-price="@burger.Prix">@burger.Prix FCFA</span>
                                 </div>
 
-                                <h6 class="fw-bold mb-3">Compléments disponibles</h6>
+                                <h6 class="fw-bold mb-3">Compléments (Suppléments)</h6>
                                 <div class="row g-2">
                                     @foreach (var comp in Model.Complements)
                                     {
@@ -60,7 +62,7 @@
                                                 <div class="form-check w-100">
                                                     <input class="form-check-input complement-check" type="checkbox" name="selectedComplements" value="@comp.Nom" id="comp-b-@burger.Id-@comp.Id" data-price="@comp.Prix">
                                                     <label class="form-check-label small" for="comp-b-@burger.Id-@comp.Id">
-                                                        <strong>@comp.Nom</strong> <br> +@comp.Prix F
+                                                        <strong>@comp.Nom</strong> (+@comp.Prix F)
                                                     </label>
                                                 </div>
                                             </div>
@@ -82,35 +84,21 @@
             </div>
         }
 
-        @* --- SECTION COMPLÉMENTS --- *@
+        @* --- SECTION COMPLÉMENTS (TAILLE AUGMENTÉE) --- *@
         @foreach (var comp in Model.Complements)
         {
-            <div class="col-md-3 mb-4 product-item" data-category="Complement">
+            <div class="col-md-4 mb-4 product-item" data-category="Complement">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden text-center">
-                    @* Image des compléments à 200px *@
-                    <div style="height: 200px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
-                        @if (!string.IsNullOrEmpty(comp.Image))
-                        {
-                            <img src="~/images/@comp.Image" class="w-100 h-100" style="object-fit: cover;" alt="@comp.Nom">
-                        }
-                        else
-                        {
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <i class="bi bi-plus-circle text-orange fs-1"></i>
-                            </div>
-                        }
+                    @* Hauteur augmentée à 280px pour un meilleur affichage *@
+                    <div style="height: 280px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
+                        <img src="~/images/@comp.Image" class="w-100 h-100" style="object-fit: cover;" alt="@comp.Nom">
                     </div>
-
-                    <div class="card-body">
-                        <h6 class="fw-bold">@comp.Nom</h6>
-                        <p class="text-orange fw-bold">@comp.Prix FCFA</p>
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold">@comp.Nom</h5>
+                        <p class="text-orange fw-bold fs-5">@comp.Prix FCFA</p>
                         <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                            <input type="hidden" name="id" value="@comp.Id" />
-                            <input type="hidden" name="nom" value="@comp.Nom" />
-                            <input type="hidden" name="prix" value="@comp.Prix" />
-                            <input type="hidden" name="image" value="@comp.Image" />
-                            <input type="hidden" name="type" value="Complement" />
-                            <button type="submit" class="btn btn-sm btn-outline-orange w-100 rounded-pill fw-bold">+ Ajouter</button>
+                            <input type="hidden" name="id" value="@comp.Id" /><input type="hidden" name="nom" value="@comp.Nom" /><input type="hidden" name="prix" value="@comp.Prix" /><input type="hidden" name="image" value="@comp.Image" /><input type="hidden" name="type" value="Complement" />
+                            <button type="submit" class="btn btn-orange w-100 rounded-pill fw-bold">+ Ajouter</button>
                         </form>
                     </div>
                 </div>
@@ -122,20 +110,45 @@
         {
             <div class="col-md-4 mb-4 product-item" data-category="Menu">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
-                    @* Image des menus à 280px *@
                     <div style="height: 280px; width: 100%; overflow: hidden; background-color: #f8f9fa;">
                         <img src="~/images/@menu.Image" class="w-100 h-100" alt="@menu.Nom" style="object-fit: cover; object-position: center;">
                     </div>
                     <div class="card-body text-center">
-                        <h5 class="fw-bold">@menu.Nom (Menu)</h5>
+                        <h5 class="fw-bold">@menu.Nom</h5>
                         <p class="text-orange fw-bold fs-5">@menu.Prix FCFA</p>
-                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                            <input type="hidden" name="id" value="@menu.Id" />
-                            <input type="hidden" name="nom" value="@menu.Nom" />
-                            <input type="hidden" name="prix" value="@menu.Prix" />
-                            <input type="hidden" name="type" value="Menu" />
-                            <button type="submit" class="btn btn-orange w-100 rounded-3 py-2 fw-bold">Ajouter le Menu</button>
-                        </form>
+                        <button class="btn btn-orange w-100 rounded-3 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#modal-menu-@menu.Id">
+                            Détails & Composition
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            @* Modal Menu avec DESCRIPTION DYNAMIQUE *@
+            <div class="modal fade" id="modal-menu-@menu.Id" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0">
+                        <div class="modal-body p-4">
+                            <div class="text-center mb-4">
+                                <img src="~/images/@menu.Image" class="rounded-3 shadow-sm mb-3" style="width: 100%; height: 200px; object-fit: cover;">
+                                <h4 class="fw-bold">@menu.Nom</h4>
+                            </div>
+
+                            <div class="bg-light p-3 rounded-4 mb-4">
+                                <h6 class="fw-bold text-uppercase text-muted small border-bottom pb-2">Contenu du menu :</h6>
+                                @* Utilisation de la description pour le menu *@
+                                <p class="mt-2 mb-0">
+                                    @(string.IsNullOrEmpty(menu.Description) ? "Formule incluant Burger + Frites + Boisson au choix." : menu.Description)
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold fs-4">@menu.Prix FCFA</span>
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="id" value="@menu.Id" /><input type="hidden" name="nom" value="@menu.Nom" /><input type="hidden" name="prix" value="@menu.Prix" /><input type="hidden" name="type" value="Menu" /><input type="hidden" name="image" value="@menu.Image" />
+                                    <button type="submit" class="btn btn-orange px-4 fw-bold">Ajouter au panier</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,13 +157,11 @@
 </div>
 
 <style>
-    .btn-filter { border: none; background: none; font-weight: bold; color: #6c757d; padding-bottom: 8px; transition: 0.3s; }
+    .btn-filter { border: none; background: none; font-weight: bold; color: #6c757d; padding-bottom: 8px; transition: 0.3s; cursor: pointer; }
     .btn-filter.active { color: #FF6B00; border-bottom: 3px solid #FF6B00; }
     .text-orange { color: #FF6B00; }
     .btn-orange { background-color: #FF6B00; color: white; border: none; }
     .btn-orange:hover { background-color: #e66000; color: white; }
-    .btn-outline-orange { border: 2px solid #FF6B00; color: #FF6B00; }
-    .btn-outline-orange:hover { background-color: #FF6B00; color: white; }
 </style>
 
 @section Scripts {
@@ -160,11 +171,7 @@
         element.classList.add('active');
         const items = document.querySelectorAll('.product-item');
         items.forEach(item => {
-            if (category === 'all' || item.getAttribute('data-category') === category) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            item.style.display = (category === 'all' || item.getAttribute('data-category') === category) ? 'block' : 'none';
         });
     }
 
@@ -181,12 +188,11 @@
                 checkboxes.forEach(checkbox => {
                     checkbox.addEventListener('change', function () {
                         let extraTotal = 0;
-                        modal.querySelectorAll('.complement-check:checked').forEach(checkedBox => {
-                            extraTotal += parseFloat(checkedBox.dataset.price);
+                        modal.querySelectorAll('.complement-check:checked').forEach(cb => {
+                            extraTotal += parseFloat(cb.dataset.price);
                         });
-                        const finalTotal = basePrice + extraTotal;
-                        totalPriceDisplay.innerText = finalTotal + " FCFA";
-                        extraPrixInput.value = extraTotal;
+                        totalPriceDisplay.innerText = (basePrice + extraTotal) + " FCFA";
+                        if(extraPrixInput) extraPrixInput.value = extraTotal;
                     });
                 });
             }

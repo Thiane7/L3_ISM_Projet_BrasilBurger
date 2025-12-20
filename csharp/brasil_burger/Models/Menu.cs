@@ -16,4 +16,6 @@ public class Menu
     public string? Image { get; set; }
     [Column("est_archive")]
     public bool EstArchive { get; set; }
+    [Column("description")]
+    public string? Description { get; set; }
 }
