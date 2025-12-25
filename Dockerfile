@@ -12,11 +12,12 @@ WORKDIR /var/www/html
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Installation des dépendances (PHP 8.4 satisfera Symfony 8.0)
+RUN composer install --no-dev --optimize-autoloader
 # Correction des permissions pour éviter les erreurs d'écriture
 RUN chown -R www-data:www-data /var/www/html/var
 
-# Installation des dépendances (PHP 8.4 satisfera Symfony 8.0)
-RUN composer install --no-dev --optimize-autoloader
+
 
 # On définit le dossier public de Symfony comme racine web
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
