@@ -1,6 +1,6 @@
 FROM php:8.4-apache
 
-# Installation des dépendances système (git, zip pour composer) et extensions PHP pour PostgreSQL
+# Installation des dépendances système et extensions PHP
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     git \
@@ -13,16 +13,19 @@ RUN a2enmod rewrite
 COPY . /var/www/html
 WORKDIR /var/www/html
 
+# Configuration de l'environnement Symfony
+ENV APP_ENV=prod
+
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Création du dossier var et gestion des permissions
 RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
 
-# Installation des dépendances Symfony
+# Installation des dépendances Symfony (sans les outils de debug)
 RUN composer install --no-dev --optimize-autoloader
 
-# On définit le dossier public de Symfony comme racine web
+# Configuration de la racine web
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
