@@ -1,6 +1,6 @@
 FROM php:8.4-apache
 
-# Installation des extensions PHP nécessaires pour PostgreSQL
+# Installation des extensions PHP pour PostgreSQL
 RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql
 
@@ -12,12 +12,11 @@ WORKDIR /var/www/html
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installation des dépendances (PHP 8.4 satisfera Symfony 8.0)
+
+RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
+
+# Installation des dépendances
 RUN composer install --no-dev --optimize-autoloader
-# Correction des permissions pour éviter les erreurs d'écriture
-RUN chown -R www-data:www-data /var/www/html/var
-
-
 
 # On définit le dossier public de Symfony comme racine web
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
