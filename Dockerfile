@@ -1,8 +1,12 @@
 FROM php:8.4-apache
 
-# Installation des extensions PHP pour PostgreSQL
-RUN apt-get update && apt-get install -y libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+# Installation des dépendances système (git, zip pour composer) et extensions PHP pour PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    git \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install pdo pdo_pgsql zip
 
 # Configuration d'Apache
 RUN a2enmod rewrite
@@ -12,10 +16,10 @@ WORKDIR /var/www/html
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-
+# Création du dossier var et gestion des permissions
 RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
 
-# Installation des dépendances
+# Installation des dépendances Symfony
 RUN composer install --no-dev --optimize-autoloader
 
 # On définit le dossier public de Symfony comme racine web
