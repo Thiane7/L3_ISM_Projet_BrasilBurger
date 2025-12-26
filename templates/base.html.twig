@@ -2,16 +2,42 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+        <title>{% block title %}Brasil Burger{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            :root { --orange-brasil: #ff6b00; --bg-light: #f8f9fa; }
+            body { background-color: var(--bg-light); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+            .sidebar { width: 250px; height: 100vh; background: white; position: fixed; border-right: 1px solid #eee; }
+            .main-content { margin-left: 250px; padding: 30px; }
+            .nav-link { color: #666; padding: 12px 20px; border-radius: 8px; margin: 5px 15px; }
+            .nav-link.active { background-color: #fff5ed; color: var(--orange-brasil); font-weight: bold; }
+            .nav-link:hover { background-color: #f8f9fa; }
+            .btn-orange { background-color: var(--orange-brasil); color: white; border: none; border-radius: 10px; padding: 10px 20px; }
+            .card-product { border: none; border-radius: 15px; transition: transform 0.2s; }
+            .card-product:hover { transform: translateY(-5px); }
+        </style>
+        {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="sidebar d-flex flex-column p-3">
+            <div class="text-center mb-4">
+                <h5 class="text-orange fw-bold" style="color: var(--orange-brasil);">Brasil Burger</h5>
+                <small class="text-muted">Gestionnaire</small>
+            </div>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li><a href="#" class="nav-link"><i class="fa-solid fa-chart-line me-2"></i> Statistiques</a></li>
+                <li><a href="#" class="nav-link"><i class="fa-solid fa-box me-2"></i> Commandes</a></li>
+                <li><a href="{{ path('admin_produit_index') }}" class="nav-link active"><i class="fa-solid fa-burger me-2"></i> Produits</a></li>
+                <li><a href="#" class="nav-link"><i class="fa-solid fa-location-dot me-2"></i> Zones</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            {% block body %}{% endblock %}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {% block javascripts %}{% endblock %}
     </body>
 </html>
