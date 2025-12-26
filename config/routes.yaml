@@ -7,5 +7,31 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
-controllers:
-    resource: routing.controllers
+admin_produit_index:
+    path: /admin/produits
+    controller: App\Controller\Admin\ProduitController::index
+
+admin_burger_new:
+    path: /admin/produits/nouveau-burger
+    controller: App\Controller\Admin\ProduitController::newBurger
+
+admin_menu_new:
+    path: /admin/produits/nouveau-menu
+    controller: App\Controller\Admin\ProduitController::newMenu
+
+admin_burger_edit:
+    path: /admin/produits/modifier-burger/{id}
+    controller: App\Controller\Admin\ProduitController::editBurger
+
+admin_menu_edit:
+    path: /admin/produits/modifier-menu/{id}
+    controller: App\Controller\Admin\ProduitController::editMenu
+
+admin_complement_edit:
+    path: /admin/produits/modifier-complement/{id}
+    controller: App\Controller\Admin\ProduitController::editComplement
+
+# --- ARCHIVAGE ---
+admin_produit_archive:
+    path: /admin/produits/archive/{type}/{id}
+    controller: App\Controller\Admin\ProduitController::archive
