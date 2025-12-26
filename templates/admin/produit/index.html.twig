@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Produits - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold">Gestion des produits</h3>
+    <div class="dropdown">
+        <button class="btn btn-orange shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #ff6b00; color: white;">
+            <i class="fa-solid fa-plus me-2"></i> Ajouter
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li><a class="dropdown-item" href="{{ path('admin_burger_new') }}"><i class="fa-solid fa-burger me-2"></i> Nouveau Burger</a></li>
+            <li><a class="dropdown-item" href="{{ path('admin_menu_new') }}"><i class="fa-solid fa-utensils me-2"></i> Nouveau Menu</a></li>
+            {# Lien vers le complément à adapter si vous avez une route admin_complement_new #}
+            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-ice-cream me-2"></i> Nouveau Complément</a></li>
+        </ul>
+    </div>
+</div>
+
+<ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active me-2 shadow-sm" id="pills-burgers-tab" data-bs-toggle="pill" data-bs-target="#pills-burgers" type="button" role="tab">
+            Burgers ({{ burgers|length }})
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link me-2 bg-white shadow-sm" id="pills-menus-tab" data-bs-toggle="pill" data-bs-target="#pills-menus" type="button" role="tab">
+            Menus ({{ menus|length }})
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link bg-white shadow-sm" id="pills-complements-tab" data-bs-toggle="pill" data-bs-target="#pills-complements" type="button" role="tab">
+            Compléments ({{ complements|length }})
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-burgers" role="tabpanel" tabindex="0">
+        <div class="row g-4">
+            {% for burger in burgers %}
+                {{ _self.product_card(burger, 'burger') }}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Aucun burger enregistré.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-menus" role="tabpanel" tabindex="0">
+        <div class="row g-4">
+            {% for menu in menus %}
+                {{ _self.product_card(menu, 'menu') }}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Aucun menu enregistré.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-complements" role="tabpanel" tabindex="0">
+        <div class="row g-4">
+            {% for complement in complements %}
+                {{ _self.product_card(complement, 'complement') }}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Aucun complément enregistré.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# Macro mise à jour avec les routes dynamiques #}
+{% macro product_card(item, type) %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-product shadow-sm h-100 border-0" style="border-radius: 15px; overflow: hidden;">
+            <div class="position-relative">
+                <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://placehold.co/600x400?text=Brasil+Burger' }}" 
+                     class="card-img-top" 
+                     style="height: 200px; object-fit: cover;"
+                     alt="{{ item.nom }}">
+                <span class="badge position-absolute top-0 end-0 m-3 shadow-sm 
+                    {{ type == 'menu' ? 'bg-warning text-dark' : (type == 'burger' ? 'bg-info text-white' : 'bg-secondary text-white') }}">
+                    {{ type|capitalize }}
+                </span>
+            </div>
+            <div class="card-body bg-white">
+                <h5 class="card-title h6 mb-1 fw-bold text-dark">{{ item.nom }}</h5>
+                <p class="text-orange fw-bold mb-3" style="color: #ff6b00;">{{ item.prix|number_format(0, '.', ' ') }} FCFA</p>
+                
+                <div class="d-flex gap-2">
+                    {# Bouton Modifier : détecte automatiquement la route selon le type #}
+                    {% set edit_path = 'admin_' ~ type ~ '_edit' %}
+                    <a href="{{ path(edit_path, {'id': item.id}) }}" class="btn btn-light btn-sm flex-fill text-primary fw-medium border shadow-xs">
+                        <i class="fa-regular fa-pen-to-square me-1"></i> Modifier
+                    </a>
+
+                    {# Bouton Archiver : utilise la route générique avec le paramètre type #}
+                    <a href="{{ path('admin_produit_archive', {'type': type, 'id': item.id}) }}" 
+                       class="btn btn-light btn-sm flex-fill text-danger fw-medium border shadow-xs"
+                       onclick="return confirm('Êtes-vous sûr de vouloir archiver ce {{ type }} ?')">
+                        <i class="fa-regular fa-trash-can me-1"></i> Archiver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% endblock %}
