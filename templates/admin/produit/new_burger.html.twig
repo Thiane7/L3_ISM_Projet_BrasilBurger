@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0 fw-bold">Ajouter un nouveau Burger</h4>
+        </div>
+        <div class="card-body p-4">
+            {{ form_start(burgerForm) }}
+                <div class="mb-3">
+                    <label class="form-label">Nom du burger</label>
+                    {{ form_widget(burgerForm.nom) }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Prix (FCFA)</label>
+                        {{ form_widget(burgerForm.prix) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Image</label>
+                        {{ form_widget(burgerForm.image) }}
+                    </div>
+                </div>
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-orange px-4">Enregistrer</button>
+                    <a href="{{ path('admin_produit_index') }}" class="btn btn-light px-4">Annuler</a>
+                </div>
+            {{ form_end(burgerForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

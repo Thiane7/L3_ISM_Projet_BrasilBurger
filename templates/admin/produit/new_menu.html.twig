@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card-header bg-white py-3 d-flex justify-content-between">
+            <h4 class="mb-0 fw-bold">Création d'un Menu</h4>
+            <span class="badge bg-soft-orange text-orange">Nouveau</span>
+        </div>
+        <div class="card-body p-4">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Nom du Menu</label>
+                        {{ form_widget(form.nom) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Prix Total (FCFA)</label>
+                        {{ form_widget(form.prix) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Sélectionner le Burger</label>
+                    {{ form_widget(form.burger) }}
+                </div>
+
+                <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                    <label class="form-label fw-bold">Compléments (Choisir plusieurs)</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        {{ form_widget(form.complements) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Photo du Menu</label>
+                    {{ form_widget(form.image) }}
+                </div>
+
+                <div class="mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-orange px-5">Valider le Menu</button>
+                    <a href="{{ path('admin_produit_index') }}" class="btn btn-outline-secondary px-4 ms-2">Retour</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-soft-orange { background-color: #fff5ed; color: #ff6b00; }
+    /* Style pour les cases à cocher des compléments */
+    .form-check { background: white; padding: 10px 15px 10px 35px; border-radius: 8px; border: 1px solid #dee2e6; }
+</style>
+{% endblock %}
