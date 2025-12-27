@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 p-4" style="border-radius: 20px; max-width: 600px; margin: auto;">
+        <h2 class="fw-bold mb-4">Ajouter une zone</h2>
+        
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="mt-4 d-flex gap-2">
+                <button class="btn btn-primary px-4">Enregistrer</button>
+                <a href="{{ path('app_zones_index') }}" class="btn btn-light">Annuler</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

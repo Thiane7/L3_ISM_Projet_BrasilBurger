@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la Zone{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <a href="{{ path('app_zones_index') }}" class="text-decoration-none text-muted mb-3 d-inline-block">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+
+            <div class="card shadow-sm border-0 p-4" style="border-radius: 20px;">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="p-3 me-3" style="background-color: #f3e8ff; border-radius: 12px;">
+                        <i class="fas fa-edit" style="color: #9333ea;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-0">Modifier la zone</h2>
+                </div>
+
+                <p class="text-muted mb-4">Vous modifiez actuellement la <strong>{{ zone.nomZone }}</strong>.</p>
+
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.nomZone, 'Nom de la zone', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.nomZone, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px; padding: 12px;'}}) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.prixLivraison, 'Prix de livraison (FCFA)', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.prixLivraison, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px; padding: 12px;'}}) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.quartiers, 'Quartiers couverts', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.quartiers, {'attr': {'class': 'form-control', 'style': 'border-radius: 10px; padding: 12px;', 'placeholder': 'Ex: Plateau, Almadies...'}}) }}
+                        <div class="form-text">Séparez les quartiers par une virgule.</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary py-2 shadow-sm" style="border-radius: 10px; background-color: #9333ea; border: none;">
+                            <i class="fas fa-save me-2"></i> Mettre à jour les informations
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+
+            <div class="mt-4 text-center">
+                {{ include('admin/zones/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
