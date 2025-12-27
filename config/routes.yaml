@@ -35,3 +35,25 @@ admin_complement_edit:
 admin_produit_archive:
     path: /admin/produits/archive/{type}/{id}
     controller: App\Controller\Admin\ProduitController::archive
+
+# --- ROUTES POUR LES ZONES ---
+
+app_zones_index:
+    path: /admin/zones/
+    controller: App\Controller\ZonesController::index
+    methods: [GET]
+
+app_zones_new:
+    path: /admin/zones/new
+    controller: App\Controller\ZonesController::new
+    methods: [GET, POST]
+
+app_zones_edit:
+    path: /admin/zones/{id}/edit
+    controller: App\Controller\ZonesController::edit
+    methods: [GET, POST]
+
+app_zones_delete:
+    path: /admin/zones/{id}
+    controller: App\Controller\ZonesController::delete
+    methods: [POST]
