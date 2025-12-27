@@ -25,9 +25,20 @@ RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
 # Installation des dépendances Symfony (sans les outils de debug)
 RUN composer install --no-dev --optimize-autoloader
 
+
+
 # Configuration de la racine web
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+
+RUN echo "<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>" > /etc/apache2/conf-available/symfony.conf \
+    && a2enconf symfony
+
 
 EXPOSE 80
