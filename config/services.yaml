@@ -17,5 +17,5 @@ services:
             - '../src/Kernel.php'
 
     # Note bien : Cette ligne commence TOUT AU DEBUT de la marge (4 espaces ou alignée sur App\:)
-    App\Controller\ZonesController:
+    App\Controller\Admin\ZonesController:
         tags: ['controller.service_arguments']

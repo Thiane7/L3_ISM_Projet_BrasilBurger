@@ -40,20 +40,20 @@ admin_produit_archive:
 
 app_zones_index:
     path: /admin/zones/
-    controller: App\Controller\ZonesController::index
+    controller: App\Controller\Admin\ZonesController::index
     methods: [GET]
 
 app_zones_new:
     path: /admin/zones/new
-    controller: App\Controller\ZonesController::new
+    controller: App\Controller\Admin\ZonesController::new
     methods: [GET, POST]
 
 app_zones_edit:
     path: /admin/zones/{id}/edit
-    controller: App\Controller\ZonesController::edit
+    controller: App\Controller\Admin\ZonesController::edit
     methods: [GET, POST]
 
 app_zones_delete:
     path: /admin/zones/{id}
-    controller: App\Controller\ZonesController::delete
+    controller: App\Controller\Admin\ZonesController::delete
     methods: [POST]
