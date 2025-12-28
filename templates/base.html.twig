@@ -7,33 +7,70 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
             :root { --orange-brasil: #ff6b00; --bg-light: #f8f9fa; }
-            body { background-color: var(--bg-light); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-            .sidebar { width: 250px; height: 100vh; background: white; position: fixed; border-right: 1px solid #eee; }
-            .main-content { margin-left: 250px; padding: 30px; }
-            .nav-link { color: #666; padding: 12px 20px; border-radius: 8px; margin: 5px 15px; }
-            .nav-link.active { background-color: #fff5ed; color: var(--orange-brasil); font-weight: bold; }
-            .nav-link:hover { background-color: #f8f9fa; }
+            body { background-color: var(--bg-light); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; margin: 0; }
+            .sidebar { width: 250px; height: 100vh; background: white; position: fixed; border-right: 1px solid #eee; z-index: 1000; }
+            .main-content { margin-left: 250px; padding: 30px; width: calc(100% - 250px); min-height: 100vh; }
+            .nav-link { color: #666; padding: 12px 20px; border-radius: 8px; margin: 5px 15px; transition: 0.3s; }
+            
+            /* Classe active dynamique */
+            .nav-link.active { background-color: #fff5ed !important; color: var(--orange-brasil) !important; font-weight: bold; }
+            .nav-link:hover { background-color: #f8f9fa; color: var(--orange-brasil); }
+            
+            .text-orange { color: var(--orange-brasil); }
             .btn-orange { background-color: var(--orange-brasil); color: white; border: none; border-radius: 10px; padding: 10px 20px; }
-            .card-product { border: none; border-radius: 15px; transition: transform 0.2s; }
-            .card-product:hover { transform: translateY(-5px); }
+            .alert-container { position: sticky; top: 0; z-index: 1001; width: 100%; }
         </style>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
         <div class="sidebar d-flex flex-column p-3">
-            <div class="text-center mb-4">
-                <h5 class="text-orange fw-bold" style="color: var(--orange-brasil);">Brasil Burger</h5>
+            <div class="text-center mb-4 mt-2">
+                <h5 class="text-orange fw-bold">Brasil Burger</h5>
                 <small class="text-muted">Gestionnaire</small>
             </div>
+            
             <ul class="nav nav-pills flex-column mb-auto">
-                <li><a href="#" class="nav-link"><i class="fa-solid fa-chart-line me-2"></i> Statistiques</a></li>
-                <li><a href="#" class="nav-link"><i class="fa-solid fa-box me-2"></i> Commandes</a></li>
-                <li><a href="{{ path('admin_produit_index') }}" class="nav-link active"><i class="fa-solid fa-burger me-2"></i> Produits</a></li>
-                <li><a href="#" class="nav-link"><i class="fa-solid fa-location-dot me-2"></i> Zones</a></li>
+                <li class="nav-item">
+                    {# Utilisation de app.request.attributes.get #}
+                    <a href="#" class="nav-link {{ app.request.attributes.get('_route') == 'admin_stats' ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-line me-2"></i> Statistiques
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_commande' ? 'active' : '' }}">
+                        <i class="fa-solid fa-box me-2"></i> Commandes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('admin_produit_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_produit' ? 'active' : '' }}">
+                        <i class="fa-solid fa-burger me-2"></i> Produits
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_zones_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_zones' ? 'active' : '' }}">
+                        <i class="fa-solid fa-location-dot me-2"></i> Zones
+                    </a>
+                </li>
             </ul>
+            
+            <hr>
+            <div class="px-3 mb-3">
+                <small class="text-muted">© 2025 Brasil Burger</small>
+            </div>
         </div>
 
         <div class="main-content">
+            <div class="alert-container">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label == 'danger' ? 'danger' : 'success' }} alert-dismissible fade show shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
             {% block body %}{% endblock %}
         </div>
 
