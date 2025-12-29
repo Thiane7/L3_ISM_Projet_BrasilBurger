@@ -86,7 +86,7 @@ class CommandesRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('c')
             ->select('p.nom as nom, COUNT(lc.id) as total')
-            ->join('c.ligneCommandes', 'lc') 
+            ->join('c.lignesCommandes', 'lc') 
             ->join('lc.produit', 'p')
             ->where('c.dateCommande >= :today')
             ->andWhere('c.statut = :status')
