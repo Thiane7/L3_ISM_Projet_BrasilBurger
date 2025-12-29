@@ -74,3 +74,8 @@ app_admin_commandes_assign:
     path: /admin/commandes/assign-livreur
     controller: App\Controller\Admin\CommandeGestionController::assignLivreur
     methods: [POST]
+
+# --- ROUTES POUR LES STATS ---
+app_admin_stats:
+    path: /admin/stats
+    controller: App\Controller\Admin\StatsController::index
