@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord - Brasil Burger{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h3 class="mb-4 fw-bold">Tableau de bord</h3>
+
+    {# --- CARTES DE STATISTIQUES --- #}
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fa-solid fa-box text-primary fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Commandes en cours</small>
+                        <h4 class="fw-bold mb-0">{{ stats.en_cours }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fa-solid fa-circle-check text-success fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Commandes validées</small>
+                        <h4 class="fw-bold mb-0">{{ stats.validees }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fa-solid fa-money-bill-wave text-warning fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Recettes journalières</small>
+                        <h4 class="fw-bold mb-0 text-orange">{{ stats.recette|number_format(0, ',', ' ') }} FCFA</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex align-items-center">
+                    <div class="bg-danger bg-opacity-10 p-3 rounded-3 me-3">
+                        <i class="fa-solid fa-circle-xmark text-danger fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Commandes annulées</small>
+                        <h4 class="fw-bold mb-0 text-danger">{{ stats.annulees }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- GRAPHIQUES --- #}
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <h5 class="mb-4 fw-bold"><i class="fa-solid fa-chart-simple text-orange me-2"></i> Produits les plus vendus</h5>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <h5 class="mb-4 fw-bold"><i class="fa-solid fa-chart-pie text-orange me-2"></i> Répartition des commandes</h5>
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Graphique Barres (Exemple Statique pour illustrer le design)
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Menu Classic', 'Burger Spicy', 'Menu Deluxe', 'Cheese Burger'],
+            datasets: [{
+                label: 'Ventes',
+                data: [16, 12, 10, 8],
+                backgroundColor: '#ff6b00',
+                borderRadius: 8
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    // Graphique Camembert (Dynamique)
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ modeLabels|raw }},
+            datasets: [{
+                data: {{ modeData|raw }},
+                backgroundColor: ['#ff6b00', '#ff9f40', '#ffd2a0']
+            }]
+        }
+    });
+</script>
+{% endblock %}
