@@ -57,3 +57,20 @@ app_zones_delete:
     path: /admin/zones/{id}
     controller: App\Controller\Admin\ZonesController::delete
     methods: [POST]
+
+# --- ROUTES POUR LES COMMANDES ---
+
+app_admin_commandes_index:
+    path: /admin/commandes
+    controller: App\Controller\Admin\CommandeGestionController::index
+    methods: [GET]
+
+app_admin_commandes_change_status:
+    path: /admin/commandes/{id}/status/{newStatus}
+    controller: App\Controller\Admin\CommandeGestionController::changeStatus
+    methods: [GET]
+
+app_admin_commandes_assign:
+    path: /admin/commandes/assign-livreur
+    controller: App\Controller\Admin\CommandeGestionController::assignLivreur
+    methods: [POST]
