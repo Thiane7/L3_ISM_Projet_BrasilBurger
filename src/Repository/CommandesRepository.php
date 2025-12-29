@@ -78,4 +78,25 @@ class CommandesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+   
+    public function getTopProducts(int $limit = 5): array
+    {
+        $today = new \DateTime('today');
+
+        return $this->createQueryBuilder('c')
+            ->select('p.nom as nom, COUNT(lc.id) as total')
+            ->join('c.ligneCommandes', 'lc') 
+            ->join('lc.produit', 'p')
+            ->where('c.dateCommande >= :today')
+            ->andWhere('c.statut = :status')
+            ->setParameter('today', $today)
+            ->setParameter('status', 'VALIDE')
+            ->groupBy('p.nom')
+            ->orderBy('total', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

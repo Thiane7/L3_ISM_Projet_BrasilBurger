@@ -42,7 +42,7 @@ class Commandes
 
     public function getIdCommande(): ?int { return $this->idCommande; }
 
-    // CORRECTION : On change le type de retour User par Clients
+   
     public function getClient(): ?Clients { return $this->client; }
     public function setClient(?Clients $client): self { $this->client = $client; return $this; }
 

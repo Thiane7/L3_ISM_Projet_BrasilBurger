@@ -83,30 +83,42 @@
 {% block javascripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Graphique Barres (Exemple Statique pour illustrer le design)
+   
     new Chart(document.getElementById('barChart'), {
         type: 'bar',
         data: {
-            labels: ['Menu Classic', 'Burger Spicy', 'Menu Deluxe', 'Cheese Burger'],
+            labels: {{ productLabels|raw }}, 
             datasets: [{
                 label: 'Ventes',
-                data: [16, 12, 10, 8],
+                data: {{ productData|raw }}, 
                 backgroundColor: '#ff6b00',
                 borderRadius: 8
             }]
         },
-        options: { plugins: { legend: { display: false } } }
+        options: { 
+            responsive: true,
+            plugins: { 
+                legend: { display: false } 
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
     });
 
-    // Graphique Camembert (Dynamique)
+    
     new Chart(document.getElementById('pieChart'), {
         type: 'doughnut',
         data: {
             labels: {{ modeLabels|raw }},
             datasets: [{
                 data: {{ modeData|raw }},
-                backgroundColor: ['#ff6b00', '#ff9f40', '#ffd2a0']
+                backgroundColor: ['#ff6b00', '#ff9f40', '#ffd2a0', '#ffc107']
             }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
         }
     });
 </script>
