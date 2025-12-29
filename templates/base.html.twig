@@ -30,22 +30,29 @@
             </div>
             
             <ul class="nav nav-pills flex-column mb-auto">
+                {# --- STATISTIQUES --- #}
                 <li class="nav-item">
-                    {# Utilisation de app.request.attributes.get #}
-                    <a href="#" class="nav-link {{ app.request.attributes.get('_route') == 'admin_stats' ? 'active' : '' }}">
+                    <a href="{{ path('app_admin_stats') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_admin_stats' ? 'active' : '' }}">
                         <i class="fa-solid fa-chart-line me-2"></i> Statistiques
                     </a>
                 </li>
+
+                {# --- COMMANDES --- #}
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_commande' ? 'active' : '' }}">
+                    <a href="{{ path('app_admin_commandes_index') }}" 
+                       class="nav-link {{ app.request.attributes.get('_route') == 'app_admin_commandes_index' ? 'active' : '' }}">
                         <i class="fa-solid fa-box me-2"></i> Commandes
                     </a>
                 </li>
+
+                {# --- PRODUITS --- #}
                 <li class="nav-item">
                     <a href="{{ path('admin_produit_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_produit' ? 'active' : '' }}">
                         <i class="fa-solid fa-burger me-2"></i> Produits
                     </a>
                 </li>
+
+                {# --- ZONES --- #}
                 <li class="nav-item">
                     <a href="{{ path('app_zones_index') }}" class="nav-link {{ app.request.attributes.get('_route') starts with 'app_zones' ? 'active' : '' }}">
                         <i class="fa-solid fa-location-dot me-2"></i> Zones
