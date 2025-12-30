@@ -79,25 +79,41 @@ class CommandesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-   
     public function getTopProducts(int $limit = 5): array
-{
-    $today = new \DateTime('today');
+    {
+        $conn = $this->getEntityManager()->getConnection();
 
-    return $this->getEntityManager()->createQueryBuilder()
-        ->select('p.nom as nom, COUNT(lc.id) as total')
-        ->from('App\Entity\LigneCommande', 'lc') 
-        ->join('lc.commande', 'c')              
-        ->join('lc.produit', 'p')           
-        ->where('c.dateCommande >= :today')
-        ->andWhere('c.statut = :status')
-        ->setParameter('today', $today)
-        ->setParameter('status', 'VALIDE')
-        ->groupBy('p.nom')
-        ->orderBy('total', 'DESC')
-        ->setMaxResults($limit)
-        ->getQuery()
-        ->getResult();
-}
+        $sql = '
+            SELECT nom, SUM(total_vendu) as total
+            FROM (
+                SELECT b.nom, SUM(lcb.quantite) as total_vendu
+                FROM LIGNE_COMMANDES_BURGER lcb
+                JOIN BURGERS b ON lcb.id_burger = b.id_burger
+                JOIN COMMANDES c ON lcb.id_commande = c.id_commande
+                WHERE c.statut = :status AND c.date_commande >= :today
+                GROUP BY b.nom
+                
+                UNION ALL
+                
+                SELECT m.nom, SUM(lcm.quantite) as total_vendu
+                FROM LIGNE_COMMANDES_MENU lcm
+                JOIN MENUS m ON lcm.id_menu = m.id_menu
+                JOIN COMMANDES c ON lcm.id_commande = c.id_commande
+                WHERE c.statut = :status AND c.date_commande >= :today
+                GROUP BY m.nom
+            ) as resultats
+            GROUP BY nom
+            ORDER BY total DESC
+            LIMIT :limit
+        ';
 
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery([
+            'today' => (new \DateTime('today'))->format('Y-m-d H:i:s'),
+            'status' => 'VALIDE',
+            'limit' => $limit
+        ]);
+
+        return $result->fetchAllAssociative();
+    }
 }
