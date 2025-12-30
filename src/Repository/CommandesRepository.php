@@ -81,40 +81,8 @@ class CommandesRepository extends ServiceEntityRepository
 
     public function getTopProducts(int $limit = 5): array
     {
-        $conn = $this->getEntityManager()->getConnection();
-
-        
-        $limit = (int) $limit;
-
-        $sql = "
-            SELECT nom, SUM(total_vendu) as total
-            FROM (
-                SELECT b.nom, SUM(lcb.quantite) as total_vendu
-                FROM LIGNE_COMMANDES_BURGER lcb
-                JOIN BURGERS b ON lcb.id_burger = b.id_burger
-                JOIN COMMANDES c ON lcb.id_commande = c.id_commande
-                WHERE c.statut = :status AND c.date_commande >= :today
-                GROUP BY b.nom
-                
-                UNION ALL
-                
-                SELECT m.nom, SUM(lcm.quantite) as total_vendu
-                FROM LIGNE_COMMANDES_MENU lcm
-                JOIN MENUS m ON lcm.id_menu = m.id_menu
-                JOIN COMMANDES c ON lcm.id_commande = c.id_commande
-                WHERE c.statut = :status AND c.date_commande >= :today
-                GROUP BY m.nom
-            ) as resultats
-            GROUP BY nom
-            ORDER BY total DESC
-            LIMIT $limit
-        ";
-
-        $result = $conn->executeQuery($sql, [
-            'today' => (new \DateTime('today'))->format('Y-m-d 00:00:00'),
-            'status' => 'VALIDE'
-        ]);
-
-        return $result->fetchAllAssociative();
+        // Retour vide temporaire pour éviter l'erreur SQL "Undefined table: LIGNE_COMMANDES_BURGER"
+        // TODO: Rétablir la requête une fois les tables de jointure créées
+        return [];
     }   
 }
