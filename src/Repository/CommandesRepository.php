@@ -83,7 +83,10 @@ class CommandesRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = '
+        
+        $limit = (int) $limit;
+
+        $sql = "
             SELECT nom, SUM(total_vendu) as total
             FROM (
                 SELECT b.nom, SUM(lcb.quantite) as total_vendu
@@ -104,20 +107,14 @@ class CommandesRepository extends ServiceEntityRepository
             ) as resultats
             GROUP BY nom
             ORDER BY total DESC
-            LIMIT :limit
-        ';
+            LIMIT $limit
+        ";
 
-        
         $result = $conn->executeQuery($sql, [
             'today' => (new \DateTime('today'))->format('Y-m-d 00:00:00'),
-            'status' => 'VALIDE',
-            'limit' => $limit
-        ], [
-            'limit' => \PDO::PARAM_INT, 
-            'status' => \PDO::PARAM_STR,
-            'today' => \PDO::PARAM_STR
+            'status' => 'VALIDE'
         ]);
 
         return $result->fetchAllAssociative();
-    }
+    }   
 }
