@@ -107,11 +107,15 @@ class CommandesRepository extends ServiceEntityRepository
             LIMIT :limit
         ';
 
-        $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([
-            'today' => (new \DateTime('today'))->format('Y-m-d H:i:s'),
+        
+        $result = $conn->executeQuery($sql, [
+            'today' => (new \DateTime('today'))->format('Y-m-d 00:00:00'),
             'status' => 'VALIDE',
             'limit' => $limit
+        ], [
+            'limit' => \PDO::PARAM_INT, 
+            'status' => \PDO::PARAM_STR,
+            'today' => \PDO::PARAM_STR
         ]);
 
         return $result->fetchAllAssociative();
