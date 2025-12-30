@@ -27,6 +27,9 @@ class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $prenom = null;
 
+    #[ORM\Column(length: 25)]
+    private ?string $telephone = null;
+
     public function getRoles(): array 
     {
         return ['ROLE_GESTIONNAIRE']; 
@@ -44,5 +47,7 @@ class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPrenom(): ?string { return $this->prenom; }
     public function setPrenom(string $prenom): self { $this->prenom = $prenom; return $this; }
     public function setPassword(string $password): self { $this->password = $password; return $this; }
+    public function getTelephone(): ?string { return $this->telephone; }
+    public function setTelephone(string $telephone): self { $this->telephone = $telephone; return $this; }
 
 }
